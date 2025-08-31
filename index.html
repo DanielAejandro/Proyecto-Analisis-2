@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Login Profesional</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            width: 50%;
+            color: #333;
+        }
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        .tab button.active {
+            background-color: #ccc;
+        }
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border-top: none;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Sistema de Login</h2>
+        
+        <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'Login')">Login</button>
+            <button class="tablinks" onclick="openTab(event, 'Register')">Registro</button>
+        </div>
+        
+        <div id="Login" class="tabcontent" style="display:block;">
+            <div id="loginMessage" class="message"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Contraseña:</label>
+                    <input type="password" id="loginPassword" name="password" required pattern="[a-zA-Z0-9]+" title="Solo caracteres alfanuméricos">
+                </div>
+                <button type="submit">Iniciar Sesión</button>
+            </form>
+            <div style="text-align: center; margin-top: 15px;">
+                <button onclick="showUnlockForm()" style="background-color: #f44336;">Desbloquear Cuenta</button>
+            </div>
+        </div>
+        
+        <div id="unlockForm" style="display:none;">
+            <div id="unlockMessage" class="message"></div>
+            <h3>Desbloquear Cuenta</h3>
+            <form id="unlockAccountForm">
+                <div class="form-group">
+                    <label for="unlockEmail">Email:</label>
+                    <input type="email" id="unlockEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="unlockPassword">Contraseña:</label>
+                    <input type="password" id="unlockPassword" name="password" required pattern="[a-zA-Z0-9]+" title="Solo caracteres alfanuméricos">
+                </div>
+                <button type="submit">Desbloquear Cuenta</button>
+                <button type="button" onclick="hideUnlockForm()" style="background-color: #6c757d; margin-top: 10px;">Cancelar</button>
+            </form>
+        </div>
+        
+        <div id="Register" class="tabcontent">
+            <div id="registerMessage" class="message"></div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Nombre:</label>
+                    <input type="text" id="registerName" name="name" required pattern="[a-zA-Z0-9]+" title="Solo caracteres alfanuméricos">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Contraseña:</label>
+                    <input type="password" id="registerPassword" name="password" required pattern="[a-zA-Z0-9]+" title="Solo caracteres alfanuméricos (mínimo 6 caracteres)" minlength="6">
+                </div>
+                <button type="submit">Registrarse</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+            
+            // Ocultar formulario de desbloqueo si está visible
+            document.getElementById('unlockForm').style.display = 'none';
+        }
+        
+        function showUnlockForm() {
+            document.getElementById('unlockForm').style.display = 'block';
+            document.getElementById('Login').style.display = 'none';
+            document.getElementById('Register').style.display = 'none';
+        }
+        
+        function hideUnlockForm() {
+            document.getElementById('unlockForm').style.display = 'none';
+            document.getElementById('Login').style.display = 'block';
+        }
+        
+        // Función mejorada para mostrar mensajes
+function showMessage(elementId, message, isError = false) {
+    const messageElement = document.getElementById(elementId);
+    messageElement.textContent = message;
+    messageElement.className = isError ? 'message error' : 'message success';
+    messageElement.style.display = 'block';
+    
+    setTimeout(() => {
+        messageElement.style.display = 'none';
+    }, 5000);
+}
+
+// Función para verificar si el servidor está activo
+async function checkServerStatus() {
+    try {
+        const response = await fetch('/api/auth/health', {
+            method: 'GET'
+        });
+        return response.ok;
+    } catch (error) {
+        return false;
+    }
+}
+
+// Manejar formulario de registro - CÓDIGO MEJORADO
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Verificar si el servidor está activo
+    const isServerActive = await checkServerStatus();
+    if (!isServerActive) {
+        showMessage('registerMessage', 'Error: El servidor no está disponible. Verifica que Spring Boot esté ejecutándose.', true);
+        return;
+    }
+    
+    const formData = {
+        name: document.getElementById('registerName').value,
+        email: document.getElementById('registerEmail').value,
+        password: document.getElementById('registerPassword').value
+    };
+    
+    try {
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        // Verificar el tipo de contenido de la respuesta
+        const contentType = response.headers.get('content-type');
+        
+        if (!response.ok) {
+            // Si la respuesta no es exitosa, intentar leer como texto primero
+            const errorText = await response.text();
+            throw new Error(errorText || `Error ${response.status}: ${response.statusText}`);
+        }
+        
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            throw new Error(`El servidor respondió con: ${text.substring(0, 100)}...`);
+        }
+        
+        const data = await response.json();
+        showMessage('registerMessage', 'Registro exitoso! Token: ' + data.token, false);
+        
+        // Cambiar a pestaña de login después de registro exitoso
+        setTimeout(() => {
+            document.querySelector('.tablinks').click();
+        }, 2000);
+        
+    } catch (error) {
+        showMessage('registerMessage', 'Error: ' + error.message, true);
+        console.error('Error detallado:', error);
+    }
+});
+
+// Manejar formulario de login - CÓDIGO MEJORADO
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const isServerActive = await checkServerStatus();
+    if (!isServerActive) {
+        showMessage('loginMessage', 'Error: El servidor no está disponible.', true);
+        return;
+    }
+    
+    const formData = {
+        email: document.getElementById('loginEmail').value,
+        password: document.getElementById('loginPassword').value
+    };
+    
+    try {
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const contentType = response.headers.get('content-type');
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || `Error ${response.status}`);
+        }
+        
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            throw new Error(`Respuesta inesperada: ${text.substring(0, 100)}...`);
+        }
+        
+        const data = await response.json();
+        showMessage('loginMessage', 'Login exitoso! Token: ' + data.token, false);
+        localStorage.setItem('token', data.token);
+        
+    } catch (error) {
+        showMessage('loginMessage', 'Error: ' + error.message, true);
+        console.error('Error detallado:', error);
+    }
+});
+
+// Manejar formulario de desbloqueo - CÓDIGO MEJORADO
+document.getElementById('unlockAccountForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const isServerActive = await checkServerStatus();
+    if (!isServerActive) {
+        showMessage('unlockMessage', 'Error: El servidor no está disponible.', true);
+        return;
+    }
+    
+    const formData = {
+        email: document.getElementById('unlockEmail').value,
+        password: document.getElementById('unlockPassword').value
+    };
+    
+    try {
+        const response = await fetch('/api/auth/unlock', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || `Error ${response.status}`);
+        }
+        
+        const message = await response.text();
+        showMessage('unlockMessage', message, false);
+        
+        setTimeout(() => {
+            hideUnlockForm();
+            document.getElementById('Login').style.display = 'block';
+        }, 2000);
+        
+    } catch (error) {
+        showMessage('unlockMessage', 'Error: ' + error.message, true);
+        console.error('Error detallado:', error);
+    }
+});
+    </script>
+</body>
+</html>
